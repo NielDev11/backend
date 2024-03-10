@@ -55,8 +55,7 @@ class Cusuario:
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
-            #cursor.execute("SELECT * from usuario WHERE estado = 1")
-            cursor.execute("SELECT * FROM usuario ORDER BY estado DESC")
+            cursor.execute("SELECT u.id, u.usuario, u.contrasena, u.nombres, u.apellido1, u.apellido2, u.tipodocumento, u.identificacion, u.telefono, p.nombre, estado FROM usuario u INNER JOIN perfil p ON idperfil = p.id ORDER BY estado DESC, u.id ASC;")
             result = cursor.fetchall()
             payload = []
             content = {} 
@@ -73,7 +72,6 @@ class Cusuario:
                     'telefono':data[8],
                     'idperfil':data[9],
                     'estado':data[10]
-
                 }
                 payload.append(content)     
             content = {}       
@@ -173,7 +171,6 @@ class Cusuario:
                 conn = get_db_connection()
                 cursor = conn.cursor()   
                 estado=1
-
                 cursor.execute(""" 
                 UPDATE usuario SET estado = %s WHERE id = %s
                 """, (estado, usuario_id))
@@ -181,4 +178,4 @@ class Cusuario:
                 cursor.close()
                 return {"informacion":"Usuario recuperado con exito"}
         except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Error al eliminar el item: {str(e)}")
+            raise HTTPException(status_code=500, detail=f"Error al activar el item: {str(e)}")

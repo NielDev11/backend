@@ -10,5 +10,5 @@ class Musuario(BaseModel):
     tipodocumento: str
     identificacion: str
     telefono: str
-    idperfil: int
+    idperfil: int 
     estado: int = None
