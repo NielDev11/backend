@@ -19,7 +19,7 @@ async def obtener_usuario(usuario_id: int, get_protected_route: dict = Depends(p
     rpta = nuevo_usuario.obtener_usuario(usuario_id)
     return rpta
 
-@router.get("/obtener_usuarios/",response_model=List[Musuario])
+@router.get("/obtener_usuarios/")
 async def obtener_usuarios(get_protected_route: dict = Depends(protected_route)):
     rpta = nuevo_usuario.obtener_usuarios()
     return rpta
