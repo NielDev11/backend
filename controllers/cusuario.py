@@ -39,13 +39,10 @@ class Cusuario:
                     'estado':result[10]
             }
             json_data = jsonable_encoder(content) 
-            if result[10] == 1:
-                if result:
-                    return json_data
-                else:
-                    raise HTTPException(status_code=404, detail="Model not found")  
+            if result:
+                return json_data
             else:
-                raise HTTPException(status_code=404, detail="Model not found")  
+                raise HTTPException(status_code=404, detail="Model not found") 
 
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error al ver el item {str(e)}")
@@ -56,6 +53,7 @@ class Cusuario:
             conn = get_db_connection()
             cursor = conn.cursor()
             cursor.execute("SELECT u.id, u.usuario, u.contrasena, u.nombres, u.apellido1, u.apellido2, u.tipodocumento, u.identificacion, u.telefono, p.nombre, estado FROM usuario u INNER JOIN perfil p ON idperfil = p.id ORDER BY estado DESC, u.id ASC;")
+            cursor.execute("SELECT u.id, u.usuario, u.contrasena, u.nombres, u.apellido1, u.apellido2, u.tipodocumento, u.identificacion, u.telefono, p.nombre as 'nombre_perfil', u.estado from usuario as u join perfil as p on p.id = u.idperfil order by estado desc;")
             result = cursor.fetchall()
             payload = []
             content = {} 
@@ -118,20 +116,11 @@ class Cusuario:
     
     
     def actualizar_usuario(self,usuario:  Musuario ):
-        try:    
-                conn = get_db_connection()
-                cursor = conn.cursor()   
-                id=usuario.id  
-                usuario = usuario.usuario
-                contrasena = usuario.contrasena   
-                nombres = usuario.nombres
-                apellido1 = usuario.apellido1  
-                apellido2 = usuario.apellido2
-                tipodocumento = usuario.tipodocumento  
-                identificacion = usuario.identificacion
-                telefono = usuario.telefono  
-                idperfil = usuario.idperfil
-                cursor.execute("""
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute(
+                """
                 UPDATE usuario
                 SET 
                 usuario = %s,
@@ -142,12 +131,27 @@ class Cusuario:
                 tipodocumento = %s,
                 identificacion = %s,
                 telefono = %s,
-                idperfil = %s
+                idperfil = %s,
+                estado = %s
                 WHERE id = %s
-                """, (usuario, contrasena, nombres, apellido1, apellido2, tipodocumento, identificacion, telefono, idperfil, id))
-                conn.commit()
-                cursor.close()
-                return {"informacion":"usuario actualizado"}
+                """,
+                (
+                    usuario.usuario,
+                    usuario.contrasena,
+                    usuario.nombres,
+                    usuario.apellido1,
+                    usuario.apellido2,
+                    usuario.tipodocumento,
+                    usuario.identificacion,
+                    usuario.telefono,
+                    usuario.idperfil,
+                    usuario.estado,
+                    usuario.id,
+                ),
+            )
+            conn.commit()
+            cursor.close()
+            return {"informacion": "usuario actualizado"}
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error al actualizar el item: {str(e)}")
 
