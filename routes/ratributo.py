@@ -28,3 +28,13 @@ async def obtener_atributos(get_protected_route: dict = Depends(protected_route)
 async def actualizar_atributo(atributo: Matributo, get_protected_route: dict = Depends(protected_route)):
     rpta = nuevo_atributo.actualizar_atributo(atributo)
     return rpta
+
+@router.put("/deshabilitar_atributo/{atributo_id}")
+async def deshabilitar_atributo(atributo_id: int, get_protected_route: dict = Depends(protected_route)):
+    rpta = nuevo_atributo.deshabilitar_atributo(atributo_id)
+    return rpta
+
+@router.put("/activar_atributo/{atributo_id}")
+async def activar_atributo(atributo_id: int, get_protected_route: dict = Depends(protected_route)):
+    rpta = nuevo_atributo.activar_atributo(atributo_id)
+    return rpta

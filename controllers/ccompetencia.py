@@ -2,9 +2,12 @@ from fastapi import HTTPException
 from config.db_config import get_db_connection
 from models.mcompetencia import Mcompetencia
 from fastapi.encoders import jsonable_encoder
+from controllers.cglobal import ControllerGlobal
 
 
 class Ccompetencia:
+    def __init__(self):
+        self.cGlobal = ControllerGlobal("competencia")
     def crear_competencia(self, competencia: Mcompetencia):
         try:
             conn = get_db_connection()
@@ -14,8 +17,8 @@ class Ccompetencia:
                 (competencia.nombre, competencia.descripcion),
             )
             conn.commit()
-            return {"resultado": "competencia creado"}
             cursor.close()
+            return {"resultado": "competencia creado"}
         except Exception as e:
             raise HTTPException(
                 status_code=500, detail=f"Error al actualizar el item: {str(e)}"
@@ -35,8 +38,8 @@ class Ccompetencia:
                 "id": int(result[0]),
                 "nombre": result[1],
                 "descripcion": result[2],
+                "estado": result[3],
             }
-            ##payload.append(content)
             json_data = jsonable_encoder(content)
             if result:
                 return json_data
@@ -56,7 +59,7 @@ class Ccompetencia:
             payload = []
             content = {}
             for data in result:
-                content = {"id": data[0], "nombre": data[1], "descripcion": data[2]}
+                content = {"id": data[0], "nombre": data[1], "descripcion": data[2], "estado": data[3]}
                 payload.append(content)
             content = {}
             json_data = jsonable_encoder(payload)
@@ -94,5 +97,11 @@ class Ccompetencia:
                 status_code=500, detail=f"Error al actualizar el item: {str(e)}"
             )
 
+    def deshabilitar_competencia(self, competencia_id: int):
+        res = self.cGlobal.modificar_estado(competencia_id,0)
+        return res
+    
+    def activar_competencia(self, competencia_id: int):
+        res = self.cGlobal.modificar_estado(competencia_id,1)
+        return res
 
-##user_controller = UserController()

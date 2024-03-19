@@ -15,13 +15,13 @@ async def crear_comportamiento(comportamiento: Mcomportamiento, get_protected_ro
     return rpta
 
 
-@router.get("/obtener_comportamiento/{comportamiento_id}", response_model=Mcomportamiento)
+@router.get("/obtener_comportamiento/{comportamiento_id}")
 async def obtener_comportamiento(comportamiento_id: int, get_protected_route: dict = Depends(protected_route)):
     rpta = nuevo_comportamiento.obtener_comportamiento(comportamiento_id)
     return rpta
 
 
-@router.get("/obtener_comportamientos/", response_model=List[Mcomportamiento])
+@router.get("/obtener_comportamientos/")
 async def obtener_comportamientos(get_protected_route: dict = Depends(protected_route)):
     rpta = nuevo_comportamiento.obtener_comportamientos()
     return rpta
@@ -30,4 +30,14 @@ async def obtener_comportamientos(get_protected_route: dict = Depends(protected_
 @router.put("/actualizar_comportamiento/")
 async def obtener_comportamientos(comportamiento: Mcomportamiento, get_protected_route: dict = Depends(protected_route)):
     rpta = nuevo_comportamiento.actualizar_comportamiento(comportamiento)
+    return rpta
+
+@router.put("/deshabilitar_comportamiento/{comportamiento_id}")
+async def deshabilitar_comportamiento(comportamiento_id: int, get_protected_route: dict = Depends(protected_route)):
+    rpta = nuevo_comportamiento.deshabilitar_comportamiento(comportamiento_id)
+    return rpta
+
+@router.put("/activar_comportamiento/{comportamiento_id}")
+async def activar_comportamiento(comportamiento_id: int, get_protected_route: dict = Depends(protected_route)):
+    rpta = nuevo_comportamiento.activar_comportamiento(comportamiento_id)
     return rpta

@@ -6,3 +6,4 @@ class Mcomportamiento(BaseModel):
     nombre: str
     descripcion: str
     idcompetencia: int
+    estado: int = None

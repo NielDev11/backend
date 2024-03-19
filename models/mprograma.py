@@ -5,4 +5,5 @@ class Mprograma(BaseModel):
     nombre: str
     descripcion: str
     idfacultad: int
+    estado: int = None
    

@@ -3,16 +3,21 @@ from fastapi import HTTPException
 from config.db_config import get_db_connection
 from models.mfacultad import Mfacultad
 from fastapi.encoders import jsonable_encoder
+from controllers.cglobal import ControllerGlobal
 
 class Cfacultad:
+    
+    def __init__(self):
+        self.cGlobal = ControllerGlobal("facultad")
+
     def crear_facultad(self, facultad:  Mfacultad ):   
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
             cursor.execute("INSERT INTO facultad (nombre,descripcion) VALUES (%s, %s)", (facultad.nombre,facultad.descripcion))
             conn.commit()            
-            return {"resultado": "modelo creado"}
             cursor.close()
+            return {"resultado": "modelo creado"}
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error al actualizar el item: {str(e)}")
         
@@ -28,7 +33,8 @@ class Cfacultad:
             content={
                     'id':int(result[0]),
                     'nombre':result[1],
-                    'descripcion':result[2]
+                    'descripcion':result[2],
+                    'estado':result[3]
             }
             ##payload.append(content)            
             json_data = jsonable_encoder(content)            
@@ -52,7 +58,8 @@ class Cfacultad:
                 content={
                     'id':data[0],
                     'nombre':data[1],
-                    'descripcion':data[2]
+                    'descripcion':data[2],
+                    'estado':data[3]
                 }
                 payload.append(content)     
             content = {}       
@@ -84,4 +91,13 @@ class Cfacultad:
                 return {"informacion":"facultad actualizado"}
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error al actualizar el item: {str(e)}")
+        
+    def deshabilitar_facultad(self, facultad_id: int):
+        res = self.cGlobal.modificar_estado(facultad_id,0)
+        return res
+    
+    def activar_facultad(self, facultad_id: int):
+        res = self.cGlobal.modificar_estado(facultad_id,1)
+        return res
+
     

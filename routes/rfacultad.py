@@ -29,3 +29,13 @@ async def obtener_facultades(get_protected_route: dict = Depends(protected_route
 async def actualizar_facultad(facultad: Mfacultad, get_protected_route: dict = Depends(protected_route)):
     rpta = nuevo_facultad.actualizar_facultad(facultad)
     return rpta
+
+@router.put("/deshabilitar_facultad/{facultad_id}")
+async def deshabilitar_facultad(facultad_id: int, get_protected_route: dict = Depends(protected_route)):
+    rpta = nuevo_facultad.deshabilitar_facultad(facultad_id)
+    return rpta
+
+@router.put("/activar_facultad/{facultad_id}")
+async def activar_facultad(facultad_id: int, get_protected_route: dict = Depends(protected_route)):
+    rpta = nuevo_facultad.activar_facultad(facultad_id)
+    return rpta

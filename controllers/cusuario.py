@@ -3,8 +3,12 @@ from fastapi import HTTPException
 from config.db_config import get_db_connection
 from models.musuario import Musuario
 from fastapi.encoders import jsonable_encoder
+from controllers.cglobal import ControllerGlobal
 
 class Cusuario:
+    def __init__(self):
+        self.cGlobal = ControllerGlobal("usuario")
+        
     def crear_usuario(self, usuario:  Musuario ):   
         try:
             conn = get_db_connection()
@@ -52,8 +56,7 @@ class Cusuario:
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute("SELECT u.id, u.usuario, u.contrasena, u.nombres, u.apellido1, u.apellido2, u.tipodocumento, u.identificacion, u.telefono, p.nombre, estado FROM usuario u INNER JOIN perfil p ON idperfil = p.id ORDER BY estado DESC, u.id ASC;")
-            cursor.execute("SELECT u.id, u.usuario, u.contrasena, u.nombres, u.apellido1, u.apellido2, u.tipodocumento, u.identificacion, u.telefono, p.nombre as 'nombre_perfil', u.estado from usuario as u join perfil as p on p.id = u.idperfil order by estado desc;")
+            cursor.execute("SELECT u.id, u.usuario, u.contrasena, u.nombres, u.apellido1, u.apellido2, u.tipodocumento, u.identificacion, u.telefono, p.nombre as 'nombre_perfil', u.estado FROM usuario u INNER JOIN perfil p ON idperfil = p.id ORDER BY estado DESC, u.id ASC;")
             result = cursor.fetchall()
             payload = []
             content = {} 
@@ -102,7 +105,6 @@ class Cusuario:
                     'telefono':data[8],
                     'idperfil':data[9],
                     'estado':data[10]
-
                 }
                 payload.append(content)     
             content = {}       
@@ -131,8 +133,7 @@ class Cusuario:
                 tipodocumento = %s,
                 identificacion = %s,
                 telefono = %s,
-                idperfil = %s,
-                estado = %s
+                idperfil = %s
                 WHERE id = %s
                 """,
                 (
@@ -145,7 +146,6 @@ class Cusuario:
                     usuario.identificacion,
                     usuario.telefono,
                     usuario.idperfil,
-                    usuario.estado,
                     usuario.id,
                 ),
             )
@@ -156,30 +156,9 @@ class Cusuario:
             raise HTTPException(status_code=500, detail=f"Error al actualizar el item: {str(e)}")
 
     def eliminar_usuario(self, usuario_id: int ):
-        try:    
-                conn = get_db_connection()
-                cursor = conn.cursor()   
-                estado=0
-
-                cursor.execute(""" 
-                UPDATE usuario SET estado = %s WHERE id = %s
-                """, (estado, usuario_id))
-                conn.commit()
-                cursor.close()
-                return {"informacion":"Usuario eliminado con exito"}
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Error al eliminar el item: {str(e)}")
+        res = self.cGlobal.modificar_estado(usuario_id,0)
+        return res
         
     def activar_usuario(self, usuario_id: int ):
-        try:    
-                conn = get_db_connection()
-                cursor = conn.cursor()   
-                estado=1
-                cursor.execute(""" 
-                UPDATE usuario SET estado = %s WHERE id = %s
-                """, (estado, usuario_id))
-                conn.commit()
-                cursor.close()
-                return {"informacion":"Usuario recuperado con exito"}
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Error al activar el item: {str(e)}")
+        res = self.cGlobal.modificar_estado(usuario_id,1)
+        return res

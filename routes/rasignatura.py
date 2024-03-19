@@ -28,3 +28,13 @@ async def obtener_asignaturas(get_protected_route: dict = Depends(protected_rout
 async def actualizar_asignatura(asignatura: Masignatura, get_protected_route: dict = Depends(protected_route)):
     rpta = nuevo_asignatura.actualizar_asignatura(asignatura)
     return rpta
+
+@router.put("/deshabilitar_asignatura/{asignatura_id}")
+async def deshabilitar_asignatura(asignatura_id: int, get_protected_route: dict = Depends(protected_route)):
+    rpta = nuevo_asignatura.deshabilitar_asignatura(asignatura_id)
+    return rpta
+
+@router.put("/activar_asignatura/{asignatura_id}")
+async def activar_asignatura(asignatura_id: int, get_protected_route: dict = Depends(protected_route)):
+    rpta = nuevo_asignatura.activar_asignatura(asignatura_id)
+    return rpta

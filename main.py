@@ -21,6 +21,7 @@ from routes.revaluacionadmon import router as evaluacionadmon_router
 from routes.rdetalleevadoc import router as detalleevadoc_router
 from routes.rdetalle_evadoc_director import router as detalle_evadoc_director_router
 from routes.reva_doc_director import router as eva_doc_director_router
+from routes.rgrupo_asignatura import router as grupo_asignatura
 
 from routes.ruser import router as user
 from fastapi.middleware.cors import CORSMiddleware
@@ -66,7 +67,7 @@ app.include_router(detalleevadoc_router)
 app.include_router(detalle_evadoc_director_router)
 app.include_router(eva_doc_director_router)
 app.include_router(user)
-
+app.include_router(grupo_asignatura)
 
 
 if __name__ == "__main__":

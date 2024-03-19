@@ -3,8 +3,12 @@ from fastapi import HTTPException
 from config.db_config import get_db_connection
 from models.matributo import Matributo
 from fastapi.encoders import jsonable_encoder
+from controllers.cglobal import ControllerGlobal
 
 class Catributo:
+    def __init__(self):
+        self.cGlobal = ControllerGlobal("atributo")
+        
     def crear_atributo(self, atributo:  Matributo ):   
         try:
             conn = get_db_connection()
@@ -12,7 +16,6 @@ class Catributo:
             cursor.execute("INSERT INTO atributo (nombre,descripcion) VALUES (%s, %s)", (atributo.nombre,atributo.descripcion))
             conn.commit()            
             return {"resultado": "modelo creado"}
-            cursor.close()
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error al actualizar el item: {str(e)}")
         
@@ -28,7 +31,8 @@ class Catributo:
             content={
                     'id':int(result[0]),
                     'nombre':result[1],
-                    'descripcion':result[2]
+                    'descripcion':result[2],
+                    'estado':result[3]
             }
             ##payload.append(content)            
             json_data = jsonable_encoder(content)            
@@ -52,7 +56,8 @@ class Catributo:
                 content={
                     'id':data[0],
                     'nombre':data[1],
-                    'descripcion':data[2]
+                    'descripcion':data[2],
+                    'estado':data[3]
                 }
                 payload.append(content)     
             content = {}       
@@ -84,4 +89,13 @@ class Catributo:
                 return {"informacion":"atributo actualizado"}
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error al actualizar el item: {str(e)}")
+        
+    def deshabilitar_atributo(self, atributo_id: int):
+        res = self.cGlobal.modificar_estado(atributo_id,0)
+        return res
+                                                                                                                        
+    def activar_atributo(self, atributo_id: int):
+        res = self.cGlobal.modificar_estado(atributo_id,1)
+        return res
+
     

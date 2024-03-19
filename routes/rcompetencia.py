@@ -31,3 +31,13 @@ async def obtener_competencias(get_protected_route: dict = Depends(protected_rou
 async def actualizar_competencia(competencia: Mcompetencia, get_protected_route: dict = Depends(protected_route)):
     rpta = nuevo_competencia.actualizar_competencia(competencia)
     return rpta
+
+@router.put("/deshabilitar_competencia/{competencia_id}")
+async def deshabilitar_competencia(competencia_id: int, get_protected_route: dict = Depends(protected_route)):
+    rpta = nuevo_competencia.deshabilitar_competencia(competencia_id)
+    return rpta
+
+@router.put("/activar_competencia/{competencia_id}")
+async def activar_competencia(competencia_id: int, get_protected_route: dict = Depends(protected_route)):
+    rpta = nuevo_competencia.activar_competencia(competencia_id)
+    return rpta

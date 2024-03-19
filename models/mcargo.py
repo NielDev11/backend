@@ -6,3 +6,4 @@ class Mcargo(BaseModel):
     nombre: str
     descripcion: str
     idnivel: int
+    estado: int = None

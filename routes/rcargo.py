@@ -15,13 +15,13 @@ async def crear_cargo(cargo: Mcargo, get_protected_route: dict = Depends(protect
     return rpta
 
 
-@router.get("/obtener_cargo/{cargo_id}", response_model=Mcargo)
+@router.get("/obtener_cargo/{cargo_id}")
 async def obtener_cargo(cargo_id: int, get_protected_route: dict = Depends(protected_route)):
     rpta = nuevo_cargo.obtener_cargo(cargo_id)
     return rpta
 
 
-@router.get("/obtener_cargos/", response_model=List[Mcargo])
+@router.get("/obtener_cargos/")
 async def obtener_cargos(get_protected_route: dict = Depends(protected_route)):
     rpta = nuevo_cargo.obtener_cargos()
     return rpta
@@ -30,4 +30,14 @@ async def obtener_cargos(get_protected_route: dict = Depends(protected_route)):
 @router.put("/actualizar_cargo/")
 async def actualizar_cargo(cargo: Mcargo, get_protected_route: dict = Depends(protected_route)):
     rpta = nuevo_cargo.actualizar_cargo(cargo)
+    return rpta
+
+@router.put("/deshabilitar_cargo/{cargo_id}")
+async def deshabilitar_cargo(cargo_id: int, get_protected_route: dict = Depends(protected_route)):
+    rpta = nuevo_cargo.deshabilitar_cargo(cargo_id)
+    return rpta
+
+@router.put("/activar_cargo/{cargo_id}")
+async def activar_cargo(cargo_id: int, get_protected_route: dict = Depends(protected_route)):
+    rpta = nuevo_cargo.activar_cargo(cargo_id)
     return rpta

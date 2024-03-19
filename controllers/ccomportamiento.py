@@ -2,9 +2,12 @@ from fastapi import HTTPException
 from config.db_config import get_db_connection
 from models.mcomportamiento import Mcomportamiento
 from fastapi.encoders import jsonable_encoder
-
+from controllers.cglobal import ControllerGlobal
 
 class Ccomportamiento:
+    def __init__(self):
+        self.cGlobal = ControllerGlobal("comportamiento")
+        
     def crear_comportamiento(self, comportamiento: Mcomportamiento):
         try:
             conn = get_db_connection()
@@ -18,8 +21,8 @@ class Ccomportamiento:
                 ),
             )
             conn.commit()
-            return {"resultado": "comportamiento creado"}
             cursor.close()
+            return {"resultado": "comportamiento creado"}
         except Exception as e:
             raise HTTPException(
                 status_code=500, detail=f"Error al actualizar el item: {str(e)}"
@@ -30,7 +33,7 @@ class Ccomportamiento:
             conn = get_db_connection()
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT * from comportamiento  WHERE id = %s", (comportamiento_id,)
+                "SELECT c.id, c.nombre, c.descripcion, com.nombre as 'nombre_competencia', c.estado FROM comportamiento c INNER JOIN competencia com ON c.id = com.id WHERE c.id = %s ORDER BY c.estado DESC, c.id ASC", (comportamiento_id,)
             )
             result = cursor.fetchone()
             payload = []
@@ -39,9 +42,9 @@ class Ccomportamiento:
                 "id": int(result[0]),
                 "nombre": result[1],
                 "descripcion": result[2],
-                "idcompetencia": int(result[3]),
+                "idcompetencia": str(result[3]),
+                "estado": int(result[4])
             }
-            ##payload.append(content)
             json_data = jsonable_encoder(content)
             if result:
                 return json_data
@@ -56,7 +59,7 @@ class Ccomportamiento:
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute("SELECT * from comportamiento ")
+            cursor.execute("SELECT c.id, c.nombre, c.descripcion, com.nombre as 'nombre_competencia', c.estado FROM comportamiento c INNER JOIN competencia com ON c.id = com.id ORDER BY estado DESC, c.id ASC")
             result = cursor.fetchall()
             payload = []
             content = {}
@@ -66,6 +69,7 @@ class Ccomportamiento:
                     "nombre": data[1],
                     "descripcion": data[2],
                     "idcompetencia": data[3],
+                    "estado": data[4]
                 }
                 payload.append(content)
             content = {}
@@ -106,5 +110,10 @@ class Ccomportamiento:
                 status_code=500, detail=f"Error al actualizar el item: {str(e)}"
             )
 
-
-##user_controller = UserController()
+    def deshabilitar_comportamiento(self, comportamiento_id: int):
+        res = self.cGlobal.modificar_estado(comportamiento_id,0)
+        return res
+    
+    def activar_comportamiento(self, comportamiento_id: int):
+        res = self.cGlobal.modificar_estado(comportamiento_id,1)
+        return res

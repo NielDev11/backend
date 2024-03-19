@@ -24,11 +24,6 @@ async def obtener_usuarios(get_protected_route: dict = Depends(protected_route))
     rpta = nuevo_usuario.obtener_usuarios()
     return rpta
 
-@router.get("/obtener_usuarios_eliminados/",response_model=List[Musuario])
-async def obtener_usuarios_eliminados(get_protected_route: dict = Depends(protected_route)):
-    rpta = nuevo_usuario.obtener_usuarios_eliminados()
-    return rpta
-
 @router.put("/actualizar_usuario/")
 async def actualizas_usuario(usuario: Musuario, get_protected_route: dict = Depends(protected_route)):
     rpta = nuevo_usuario.actualizar_usuario(usuario)
