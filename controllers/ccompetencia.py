@@ -29,7 +29,7 @@ class Ccompetencia:
             conn = get_db_connection()
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT * from competencia  WHERE id = %s", (competencia_id,)
+                "SELECT * from competencia  WHERE id = %s ORDER BY estado desc, id ASC", (competencia_id,)
             )
             result = cursor.fetchone()
             payload = []
@@ -54,7 +54,7 @@ class Ccompetencia:
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute("SELECT * from competencia ")
+            cursor.execute("SELECT * from competencia ORDER BY estado desc, id ASC")
             result = cursor.fetchall()
             payload = []
             content = {}

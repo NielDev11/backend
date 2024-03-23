@@ -23,6 +23,11 @@ async def obtener_niveles(get_protected_route: dict = Depends(protected_route)):
     rpta = nuevo_nivel.obtener_niveles()
     return rpta
 
+@router.get("/obtener_niveles_activos/")
+async def obtener_niveles_activos(get_protected_route: dict = Depends(protected_route)):
+    rpta = nuevo_nivel.obtener_niveles_activos()
+    return rpta
+
 @router.put("/actualizar_nivel/")
 async def actualizar_nivel(nivel: Mnivel, get_protected_route: dict = Depends(protected_route)):
     rpta = nuevo_nivel.actualizar_nivel(nivel)

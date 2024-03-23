@@ -39,11 +39,11 @@ class Cperfil:
             raise HTTPException(status_code=500, detail=f"Error al actualizar el item: {str(e)}")
 
        
-    def obtener_perfils(self):
+    def obtener_perfiles(self):
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute("SELECT * from perfil ")
+            cursor.execute("SELECT * from perfil ORDER BY estado DESC, id ASC")
             result = cursor.fetchall()
             payload = []
             content = {} 
@@ -52,6 +52,29 @@ class Cperfil:
                     'id':data[0],
                     'nombre':data[1],
                     'descripcion':data[2]
+                }
+                payload.append(content)     
+            content = {}       
+            json_data = jsonable_encoder(payload)            
+            if result:
+               return  json_data
+            else:
+                raise HTTPException(status_code=404, detail="Model not found")  
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Error al actualizar el item: {str(e)}")
+        
+    def obtener_perfiles_activos(self):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute("SELECT * from perfil WHERE estado = 1 ORDER BY estado DESC, id ASC")
+            result = cursor.fetchall()
+            payload = []
+            content = {} 
+            for data in result:
+                content={
+                    'id':data[0],
+                    'nombre':data[1]
                 }
                 payload.append(content)     
             content = {}       

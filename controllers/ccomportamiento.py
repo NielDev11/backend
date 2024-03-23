@@ -33,7 +33,7 @@ class Ccomportamiento:
             conn = get_db_connection()
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT c.id, c.nombre, c.descripcion, com.nombre as 'nombre_competencia', c.estado FROM comportamiento c INNER JOIN competencia com ON c.id = com.id WHERE c.id = %s ORDER BY c.estado DESC, c.id ASC", (comportamiento_id,)
+                "SELECT c.id, c.nombre, c.descripcion, com.nombre as 'nombre_competencia', c.estado FROM comportamiento c INNER JOIN competencia com ON c.id = com.id WHERE c.id = %s", (comportamiento_id,)
             )
             result = cursor.fetchone()
             payload = []

@@ -20,9 +20,14 @@ async def obtener_perfil(perfil_id: int, get_protected_route: dict = Depends(pro
     rpta = nuevo_perfil.obtener_perfil(perfil_id)
     return rpta
 
-@router.get("/obtener_perfils/",response_model=List[Mperfil])
-async def obtener_perfils(get_protected_route: dict = Depends(protected_route)):
-    rpta = nuevo_perfil.obtener_perfils()
+@router.get("/obtener_perfiles/",response_model=List[Mperfil])
+async def obtener_perfiles(get_protected_route: dict = Depends(protected_route)):
+    rpta = nuevo_perfil.obtener_perfiles()
+    return rpta
+
+@router.get("/obtener_perfiles_activos/")
+async def obtener_perfiles_activos(get_protected_route: dict = Depends(protected_route)):
+    rpta = nuevo_perfil.obtener_perfiles_activos()
     return rpta
 
 @router.put("/actualizar_perfil/")

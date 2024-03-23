@@ -53,12 +53,34 @@ class Cnivel:
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute("SELECT * from nivel ")
+            cursor.execute("SELECT * from nivel ORDER BY estado desc, id ASC")
             result = cursor.fetchall()
             payload = []
             content = {}
             for data in result:
                 content = {"id": data[0], "nombre": data[1], "descripcion": data[2], "estado": data[3]}
+                payload.append(content)
+            content = {}
+            json_data = jsonable_encoder(payload)
+            if result:
+                return json_data
+            else:
+                raise HTTPException(status_code=404, detail="Nivel not found")
+        except Exception as e:
+            raise HTTPException(
+                status_code=500, detail=f"Error al actualizar el item: {str(e)}"
+            )
+        
+    def obtener_niveles_activos(self):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute("SELECT * from nivel WHERE estado = 1 ORDER BY estado DESC, id ASC")
+            result = cursor.fetchall()
+            payload = []
+            content = {}
+            for data in result:
+                content = {"id": data[0], "nombre": data[1]}
                 payload.append(content)
             content = {}
             json_data = jsonable_encoder(payload)

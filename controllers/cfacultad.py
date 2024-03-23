@@ -50,7 +50,7 @@ class Cfacultad:
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute("SELECT * from facultad ")
+            cursor.execute("SELECT * from facultad ORDER BY estado desc, id ASC")
             result = cursor.fetchall()
             payload = []
             content = {} 

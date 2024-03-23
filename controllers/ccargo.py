@@ -54,7 +54,7 @@ class Ccargo:
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute("SELECT c.id, c.nombre, c.descripcion, n.nombre as 'nombre_cargo', c.estado FROM cargo c INNER JOIN nivel n ON c.idnivel = n.id")
+            cursor.execute("SELECT c.id, c.nombre, c.descripcion, n.nombre as 'nombre_nivel', c.estado FROM cargo c INNER JOIN nivel n ON c.idnivel = n.id order by estado desc, c.id ASC")
             result = cursor.fetchall()
             payload = []
             content = {}

@@ -47,7 +47,7 @@ class Ctipoevaluacion:
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute("SELECT * from tipoevaluacion ")
+            cursor.execute("SELECT * from tipoevaluacion ORDER BY estado desc, id ASC")
             result = cursor.fetchall()
             payload = []
             content = {} 

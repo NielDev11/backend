@@ -56,7 +56,6 @@ class Cusuario:
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute("SELECT u.id, u.usuario, u.contrasena, u.nombres, u.apellido1, u.apellido2, u.tipodocumento, u.identificacion, u.telefono, p.nombre, estado FROM usuario u INNER JOIN perfil p ON idperfil = p.id ORDER BY estado DESC, u.id ASC;")
             cursor.execute("SELECT u.id, u.usuario, u.contrasena, u.nombres, u.apellido1, u.apellido2, u.tipodocumento, u.identificacion, u.telefono, p.nombre as 'nombre_perfil', u.estado from usuario as u join perfil as p on p.id = u.idperfil order by estado desc;")
             result = cursor.fetchall()
             payload = []
