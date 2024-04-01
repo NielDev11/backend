@@ -4,3 +4,4 @@
 .db
 .proyecto
 .config
+.env
