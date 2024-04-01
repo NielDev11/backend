@@ -26,6 +26,12 @@ async def obtener_competencias(get_protected_route: dict = Depends(protected_rou
     rpta = nuevo_competencia.obtener_competencias()
     return rpta
 
+@router.get("/obtener_competencias_activos/")
+async def obtener_competencias_activos(
+    get_protected_route: dict = Depends(protected_route),
+):
+    rpta = nuevo_competencia.obtener_competencias_activos()
+    return rpta
 
 @router.put("/actualizar_competencia/")
 async def actualizar_competencia(competencia: Mcompetencia, get_protected_route: dict = Depends(protected_route)):
