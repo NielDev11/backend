@@ -1,6 +1,5 @@
 /__pycache__
 /documentos
 /sql
-.db
-.proyecto
-.config
+.db.pdf
+.proyecto.accdb

@@ -2,9 +2,14 @@ from fastapi import HTTPException
 from config.db_config import get_db_connection
 from models.mbancopregunta import Mbancopregunta
 from fastapi.encoders import jsonable_encoder
+from controllers.cglobal import ControllerGlobal
 
 
 class Cbancopregunta:
+
+    def __init__(self) -> None:
+        self.cGlobal = ControllerGlobal("bancopregunta")
+
     def crear_bancopregunta(self, bancopregunta: Mbancopregunta):
         try:
             conn = get_db_connection()
@@ -56,7 +61,7 @@ class Cbancopregunta:
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute("SELECT * from bancopregunta ")
+            cursor.execute("SELECT b.id, b.idnivel, n.nombre as 'nombre_nivel', c.nombre as 'nombre_comportamiento', b.pregunta, b.estado from bancopregunta b INNER JOIN nivel n ON b.idnivel = n.id INNER JOIN comportamiento c ON b.idcomportamiento = c.id ORDER BY b.estado DESC, b.id ASC")
             result = cursor.fetchall()
             payload = []
             content = {}
@@ -64,8 +69,10 @@ class Cbancopregunta:
                 content = {
                     "id": data[0],
                     "idnivel": data[1],
-                    "idcomportamiento": data[2],
-                    "pregunta": data[3],
+                    "nombre_nivel": data[2],
+                    "idcomportamiento": data[3],
+                    "pregunta": data[4],
+                    "estado": data[5]
                 }
                 payload.append(content)
             content = {}
@@ -106,5 +113,10 @@ class Cbancopregunta:
                 status_code=500, detail=f"Error al actualizar el item: {str(e)}"
             )
 
-
-##user_controller = UserController()
+    def deshabilitar_bancopregunta(self, bancopregunta_id: int ):
+        res = self.cGlobal.modificar_estado(bancopregunta_id,0)
+        return res
+        
+    def activar_bancopregunta(self, bancopregunta_id: int ):
+        res = self.cGlobal.modificar_estado(bancopregunta_id,1)
+        return res

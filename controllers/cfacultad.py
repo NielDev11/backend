@@ -70,6 +70,31 @@ class Cfacultad:
                 raise HTTPException(status_code=404, detail="Model not found")  
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error al actualizar el item: {str(e)}")
+        
+    def obtener_facultades_activos(self):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute("SELECT * from facultad WHERE estado=1 ORDER BY estado desc, id ASC")
+            result = cursor.fetchall()
+            payload = []
+            content = {} 
+            for data in result:
+                content={
+                    'id':data[0],
+                    'nombre':data[1],
+                    'descripcion':data[2],
+                    'estado':data[3]
+                }
+                payload.append(content)     
+            content = {}       
+            json_data = jsonable_encoder(payload)            
+            if result:
+               return  json_data
+            else:
+                raise HTTPException(status_code=404, detail="Model not found")  
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Error al actualizar el item: {str(e)}")
     
     
     def actualizar_facultad(self,facultad:  Mfacultad ):

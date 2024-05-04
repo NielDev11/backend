@@ -47,7 +47,7 @@ class Casignatura:
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute("SELECT * from asignatura")
+            cursor.execute("SELECT * from asignatura order by estado desc, id ASC")
             result = cursor.fetchall()
             payload = []
             content = {} 

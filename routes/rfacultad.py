@@ -25,6 +25,11 @@ async def obtener_facultades(get_protected_route: dict = Depends(protected_route
     rpta = nuevo_facultad.obtener_facultades()
     return rpta
 
+@router.get("/obtener_facultades_activos/",response_model=List[Mfacultad])
+async def obtener_facultades_activos(get_protected_route: dict = Depends(protected_route)):
+    rpta = nuevo_facultad.obtener_facultades_activos()
+    return rpta
+
 @router.put("/actualizar_facultad/")
 async def actualizar_facultad(facultad: Mfacultad, get_protected_route: dict = Depends(protected_route)):
     rpta = nuevo_facultad.actualizar_facultad(facultad)

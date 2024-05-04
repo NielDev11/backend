@@ -219,5 +219,5 @@ create table detalle_evadoc_director(
     primary key(id),
     foreign key(ideva_doc_director) references eva_doc_director(id),
     foreign key(idbancopregunta) references bancopregunta(id)
-    
+
 )

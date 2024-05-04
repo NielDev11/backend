@@ -6,3 +6,5 @@ class Mbancopregunta(BaseModel):
     idnivel: int
     idcomportamiento: int
     pregunta: str
+    estado: int = None
+
