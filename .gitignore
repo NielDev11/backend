@@ -1,5 +1,3 @@
-/__pycache__
-/documentos
-/sql
-.db.pdf
-.proyecto.accdb
+__pycache__/
+documentos/
+sql/

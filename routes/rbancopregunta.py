@@ -26,6 +26,11 @@ async def obtener_bancopreguntas(get_protected_route: dict = Depends(protected_r
     rpta = nuevo_bancopregunta.obtener_bancopreguntas()
     return rpta
 
+@router.get("/filtrar_bancopreguntas/{bancopregunta_id}")
+async def filtrar_bancopreguntas(bancopregunta_id: int, get_protected_route: dict = Depends(protected_route)):
+    rpta = nuevo_bancopregunta.filtrar_bancopreguntas(bancopregunta_id)
+    return rpta
+
 
 @router.put("/actualizar_bancopregunta/")
 async def actualizar_bancopregunta(bancopregunta: Mbancopregunta, get_protected_route: dict = Depends(protected_route)):
@@ -40,4 +45,10 @@ async def deshabilitar_bancopregunta(bancopregunta_id: int, get_protected_route:
 @router.put("/activar_bancopregunta/{bancopregunta_id}")
 async def activar_bancopregunta(bancopregunta_id: int, get_protected_route: dict = Depends(protected_route)):
     rpta = nuevo_bancopregunta.activar_bancopregunta(bancopregunta_id)
+    return rpta
+
+
+@router.get("/max_bancopreguntas/")
+async def max_bancopreguntas(get_protected_route: dict = Depends(protected_route)):
+    rpta = nuevo_bancopregunta.max_bancopreguntas()
     return rpta
