@@ -8,16 +8,23 @@ from controllers.cglobal import ControllerGlobal
 class Cprograma:
 
     def __init__(self) -> None:
-        self.cGlobal = ControllerGlobal("programa")
+        self.deshabilitar_registro = 0
+        self.activar_registro = 1
+        self.nombre_tabla = "programa"
+        self.cGlobal = ControllerGlobal(self.nombre_tabla)
         
-    def crear_programa(self, programa:  Mprograma ):   	
+    def crear_programa(self, programa:  Mprograma ): 
+
+        if not all([programa.nombre.strip(), programa.descripcion.strip(), programa.idfacultad]):
+            raise HTTPException(status_code=400, detail="Todos los campos son obligatorios")
+          	
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
             cursor.execute("INSERT INTO programa (nombre,descripcion,idfacultad) VALUES (%s, %s, %s)", (programa.nombre,programa.descripcion,programa.idfacultad))
             conn.commit()         
             cursor.close()
-            return {"resultado": "modelo creado"}
+            return {"resultado": "programa creado con exito"}
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error al actualizar el item: {str(e)}")
         
@@ -96,10 +103,10 @@ class Cprograma:
             raise HTTPException(status_code=500, detail=f"Error al actualizar el item: {str(e)}")
         
     def deshabilitar_programa(self, programa_id: int):
-        res = self.cGlobal.modificar_estado(programa_id,0)
+        res = self.cGlobal.modificar_estado(programa_id, self.deshabilitar_registro)
         return res
     
     def activar_programa(self, programa_id: int):
-        res = self.cGlobal.modificar_estado(programa_id,1)
+        res = self.cGlobal.modificar_estado(programa_id, self.activar_registro)
         return res
     

@@ -34,3 +34,13 @@ async def obtener_perfiles_activos(get_protected_route: dict = Depends(protected
 async def actualizar_perfil(perfil: Mperfil, get_protected_route: dict = Depends(protected_route)):
     rpta = nuevo_perfil.actualizar_perfil(perfil)
     return rpta
+
+@router.put("/deshabilitar_perfil/{perfil_id}")
+async def deshabilitar_perfil(perfil_id: int, get_protected_route: dict = Depends(protected_route)):
+    rpta = nuevo_perfil.deshabilitar_perfil(perfil_id)
+    return rpta
+
+@router.put("/activar_perfil/{perfil_id}")
+async def activar_perfil(perfil_id: int, get_protected_route: dict = Depends(protected_route)):
+    rpta = nuevo_perfil.activar_perfil(perfil_id)
+    return rpta

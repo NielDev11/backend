@@ -6,9 +6,16 @@ from controllers.cglobal import ControllerGlobal
 
 class Cnivel:
     def __init__(self):
-        self.cGlobal = ControllerGlobal("nivel")
+        self.activar_registro = 1
+        self.deshabilitar_registro = 0
+        self.nombre_tabla = "nivel"
+        self.cGlobal = ControllerGlobal(self.nombre_tabla)
 
     def crear_nivel(self, nivel: Mnivel):
+
+        if not nivel.nombre.strip() or not nivel.descripcion.strip():
+            raise HTTPException(status_code=400, detail="El nombre y la descripción son obligatorios")
+
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
@@ -18,7 +25,7 @@ class Cnivel:
             )
             conn.commit()
             cursor.close()
-            return {"resultado": "nivel creado"}
+            return {"resultado": "nivel creado con exito"}
         except Exception as e:
             raise HTTPException(
                 status_code=500, detail=f"Error al actualizar el item: {str(e)}"
@@ -119,10 +126,10 @@ class Cnivel:
             )
 
     def deshabilitar_nivel(self, nivel_id: int):
-        res = self.cGlobal.modificar_estado(nivel_id,0)
+        res = self.cGlobal.modificar_estado(nivel_id, self.deshabilitar_registro)
         return res
                                                                                                                         
     def activar_nivel(self, nivel_id: int):
-        res = self.cGlobal.modificar_estado(nivel_id,1)
+        res = self.cGlobal.modificar_estado(nivel_id, self.activar_registro)
         return res
 

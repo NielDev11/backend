@@ -10,6 +10,8 @@ class ControllerGlobal:
     def __init__(self, nombre_tabla):
         self._nombre_tabla = nombre_tabla
 
+    # Esta funcion recive dos parametros, el primero id: que es el id del registro que se quiere eliminar
+    # El segundo parametro es estado: Donde se indica si 1:quiere activar el registro o 0:desactivar el registro
     def modificar_estado(self, id: int, estado: int):
         try:
             # print("Nombre de la tabla: ", self._nombre_tabla)

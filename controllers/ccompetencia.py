@@ -7,8 +7,16 @@ from controllers.cglobal import ControllerGlobal
 
 class Ccompetencia:
     def __init__(self):
-        self.cGlobal = ControllerGlobal("competencia")
+        self.activar_registro = 1
+        self.deshabilitar_registro = 0
+        self.nombre_tabla = "competencia"
+        self.cGlobal = ControllerGlobal(self.nombre_tabla)
+
     def crear_competencia(self, competencia: Mcompetencia):
+
+        if not competencia.nombre.strip() or not competencia.descripcion.strip():
+            raise HTTPException(status_code=400, detail="El nombre y la descripción son obligatorios")
+
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
@@ -18,7 +26,7 @@ class Ccompetencia:
             )
             conn.commit()
             cursor.close()
-            return {"resultado": "competencia creado"}
+            return {"resultado": "competencia creada con exito"}
         except Exception as e:
             raise HTTPException(
                 status_code=500, detail=f"Error al actualizar el item: {str(e)}"
@@ -122,10 +130,10 @@ class Ccompetencia:
             )
 
     def deshabilitar_competencia(self, competencia_id: int):
-        res = self.cGlobal.modificar_estado(competencia_id,0)
+        res = self.cGlobal.modificar_estado(competencia_id, self.deshabilitar_registro)
         return res
     
     def activar_competencia(self, competencia_id: int):
-        res = self.cGlobal.modificar_estado(competencia_id,1)
+        res = self.cGlobal.modificar_estado(competencia_id, self.activar_registro)
         return res
 

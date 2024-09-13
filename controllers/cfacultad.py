@@ -8,16 +8,23 @@ from controllers.cglobal import ControllerGlobal
 class Cfacultad:
     
     def __init__(self):
-        self.cGlobal = ControllerGlobal("facultad")
+        self.activar_registro = 1
+        self.deshabilitar_registro = 0
+        self.nombre_tabla = "facultad"
+        self.cGlobal = ControllerGlobal(self.nombre_tabla)
 
     def crear_facultad(self, facultad:  Mfacultad ):   
+
+        if not facultad.nombre.strip() or not facultad.descripcion.strip():
+            raise HTTPException(status_code=400, detail="El nombre y la descripción son obligatorios")
+        
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
             cursor.execute("INSERT INTO facultad (nombre,descripcion) VALUES (%s, %s)", (facultad.nombre,facultad.descripcion))
             conn.commit()            
             cursor.close()
-            return {"resultado": "modelo creado"}
+            return {"resultado": "facultad creada con exito"}
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error al actualizar el item: {str(e)}")
         
@@ -118,11 +125,11 @@ class Cfacultad:
             raise HTTPException(status_code=500, detail=f"Error al actualizar el item: {str(e)}")
         
     def deshabilitar_facultad(self, facultad_id: int):
-        res = self.cGlobal.modificar_estado(facultad_id,0)
+        res = self.cGlobal.modificar_estado(facultad_id, self.deshabilitar_registro)
         return res
     
     def activar_facultad(self, facultad_id: int):
-        res = self.cGlobal.modificar_estado(facultad_id,1)
+        res = self.cGlobal.modificar_estado(facultad_id, self.activar_registro)
         return res
 
     

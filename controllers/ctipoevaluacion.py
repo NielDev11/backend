@@ -7,15 +7,23 @@ from controllers.cglobal import ControllerGlobal
 
 class Ctipoevaluacion:
     def __init__(self):
-        self.cGlobal = ControllerGlobal("tipoevaluacion")
+        self.activar_registro = 1
+        self.deshabilitar_registro = 0
+        self.nombre_tabla = "tipoevaluacion"
+        self.cGlobal = ControllerGlobal(self.nombre_tabla)
+        
     def crear_tipoevaluacion(self, tipoevaluacion:  Mtipoevaluacion ):   
+
+        if not tipoevaluacion.nombre.strip() or not tipoevaluacion.descripcion.strip():
+            raise HTTPException(status_code=400, detail="El nombre y la descripción son obligatorios")
+
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
             cursor.execute("INSERT INTO tipoevaluacion (nombre,descripcion) VALUES (%s, %s)", (tipoevaluacion.nombre,tipoevaluacion.descripcion))
             conn.commit()        
             cursor.close()
-            return {"resultado": "modelo creado"}
+            return {"resultado": "tipo evaluacion creado con exito"}
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error al actualizar el item: {str(e)}")
         

@@ -7,14 +7,21 @@ from controllers.cglobal import ControllerGlobal
 
 class Casignatura:
     def __init__(self) -> None:
-        self.cGlobal = ControllerGlobal("asignatura")
-    def crear_asignatura(self, asignatura:  Masignatura ):   
+        self.activar_registro = 1
+        self.deshabilitar_registro = 0
+        self.nombre_tabla = "asignatura"
+        self.cGlobal = ControllerGlobal(self.nombre_tabla)
+    def crear_asignatura(self, asignatura:  Masignatura ): 
+
+        if not asignatura.nombre.strip() or not asignatura.codigo.strip():
+            raise HTTPException(status_code=400, detail="El nombre y código son obligatorios")  
+        
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
             cursor.execute("INSERT INTO asignatura (nombre,codigo,descripcion) VALUES (%s,%s,%s)", (asignatura.nombre,asignatura.codigo,asignatura.descripcion))
             conn.commit()            
-            return {"resultado": "modelo creado"}
+            return {"resultado": "Asignatura creada con exito"}
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error al actualizar el item: {str(e)}")
         
@@ -93,9 +100,9 @@ class Casignatura:
             raise HTTPException(status_code=500, detail=f"Error al actualizar el item: {str(e)}")
         
     def deshabilitar_asignatura(self, asignatura_id: int ):
-        res = self.cGlobal.modificar_estado(asignatura_id,0)
+        res = self.cGlobal.modificar_estado(asignatura_id, self.deshabilitar_registro)
         return res
         
     def activar_asignatura(self, asignatura_id: int ):
-        res = self.cGlobal.modificar_estado(asignatura_id,1)
+        res = self.cGlobal.modificar_estado(asignatura_id, self.activar_registro)
         return res

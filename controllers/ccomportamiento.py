@@ -6,9 +6,16 @@ from controllers.cglobal import ControllerGlobal
 
 class Ccomportamiento:
     def __init__(self):
-        self.cGlobal = ControllerGlobal("comportamiento")
+        self.deshabilitar_registro = 0
+        self.activar_registro = 1
+        self.nombre_tabla = "comportamiento"
+        self.cGlobal = ControllerGlobal(self.nombre_tabla)
         
     def crear_comportamiento(self, comportamiento: Mcomportamiento):
+
+        if not all([comportamiento.nombre.strip(), comportamiento.descripcion.strip(), comportamiento.idcompetencia]):
+            raise HTTPException(status_code=400, detail="Todos los campos son obligatorios")
+        
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
@@ -22,7 +29,7 @@ class Ccomportamiento:
             )
             conn.commit()
             cursor.close()
-            return {"resultado": "comportamiento creado"}
+            return {"resultado": "comportamiento creado con exito"}
         except Exception as e:
             raise HTTPException(
                 status_code=500, detail=f"Error al actualizar el item: {str(e)}"
@@ -59,7 +66,7 @@ class Ccomportamiento:
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute("SELECT c.id, c.nombre, c.descripcion, com.nombre as 'nombre_competencia', c.estado FROM comportamiento c INNER JOIN competencia com ON c.id = com.id ORDER BY estado DESC, c.id ASC")
+            cursor.execute("SELECT c.id, c.nombre, c.descripcion, com.nombre as 'nombre_competencia', c.estado FROM comportamiento c INNER JOIN competencia com ON c.idcompetencia = com.id ORDER BY estado DESC, c.id ASC;")
             result = cursor.fetchall()
             payload = []
             content = {}
@@ -111,9 +118,9 @@ class Ccomportamiento:
             )
 
     def deshabilitar_comportamiento(self, comportamiento_id: int):
-        res = self.cGlobal.modificar_estado(comportamiento_id,0)
+        res = self.cGlobal.modificar_estado(comportamiento_id, self.deshabilitar_registro)
         return res
     
     def activar_comportamiento(self, comportamiento_id: int):
-        res = self.cGlobal.modificar_estado(comportamiento_id,1)
+        res = self.cGlobal.modificar_estado(comportamiento_id, self.activar_registro)
         return res

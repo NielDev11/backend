@@ -7,15 +7,22 @@ from controllers.cglobal import ControllerGlobal
 
 class Catributo:
     def __init__(self):
-        self.cGlobal = ControllerGlobal("atributo")
+        self.activar_registro = 1
+        self.deshabilitar_registro = 0
+        self.nombre_tabla = "atributo"
+        self.cGlobal = ControllerGlobal(self.nombre_tabla)
         
     def crear_atributo(self, atributo:  Matributo ):   
+
+        if not atributo.nombre.strip() or not atributo.descripcion.strip():
+            raise HTTPException(status_code=400, detail="El nombre y la descripción son obligatorios")
+        
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
             cursor.execute("INSERT INTO atributo (nombre,descripcion) VALUES (%s, %s)", (atributo.nombre,atributo.descripcion))
             conn.commit()            
-            return {"resultado": "modelo creado"}
+            return {"resultado": "Atributo creado con exito"}
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error al actualizar el item: {str(e)}")
         
@@ -48,7 +55,7 @@ class Catributo:
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute("SELECT * from atributo ")
+            cursor.execute("SELECT * from atributo ORDER BY estado DESC, id ASC")
             result = cursor.fetchall()
             payload = []
             content = {} 
@@ -91,11 +98,11 @@ class Catributo:
             raise HTTPException(status_code=500, detail=f"Error al actualizar el item: {str(e)}")
         
     def deshabilitar_atributo(self, atributo_id: int):
-        res = self.cGlobal.modificar_estado(atributo_id,0)
+        res = self.cGlobal.modificar_estado(atributo_id, self.deshabilitar_registro)
         return res
                                                                                                                         
     def activar_atributo(self, atributo_id: int):
-        res = self.cGlobal.modificar_estado(atributo_id,1)
+        res = self.cGlobal.modificar_estado(atributo_id, self.activar_registro)
         return res
 
     

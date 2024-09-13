@@ -8,9 +8,15 @@ from controllers.cglobal import ControllerGlobal
 class Cbancopregunta:
 
     def __init__(self) -> None:
-        self.cGlobal = ControllerGlobal("bancopregunta")
+        self.activar_registro = 1
+        self.deshabilitar_registro = 0
+        self.nombre_tabla = "bancopregunta"
+        self.cGlobal = ControllerGlobal(self.nombre_tabla)
 
     def crear_bancopregunta(self, bancopregunta: Mbancopregunta):
+        if not all([bancopregunta.idnivel, bancopregunta.idcomportamiento, bancopregunta.pregunta.strip()]):
+            raise HTTPException(status_code=400, detail="Todos los campos son obligatorios")
+
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
@@ -23,8 +29,8 @@ class Cbancopregunta:
                 ),
             )
             conn.commit()
-            return {"resultado": "bancopregunta creado"}
             cursor.close()
+            return {"resultado": "bancopregunta creado con exito"}
         except Exception as e:
             raise HTTPException(
                 status_code=500, detail=f"Error al actualizar el item: {str(e)}"
@@ -170,9 +176,9 @@ class Cbancopregunta:
             )
 
     def deshabilitar_bancopregunta(self, bancopregunta_id: int ):
-        res = self.cGlobal.modificar_estado(bancopregunta_id,0)
+        res = self.cGlobal.modificar_estado(bancopregunta_id, self.deshabilitar_registro)
         return res
         
     def activar_bancopregunta(self, bancopregunta_id: int ):
-        res = self.cGlobal.modificar_estado(bancopregunta_id,1)
+        res = self.cGlobal.modificar_estado(bancopregunta_id, self.activar_registro)
         return res

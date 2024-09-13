@@ -7,9 +7,15 @@ from controllers.cglobal import ControllerGlobal
 
 class Ccargo:
     def __init__(self):
-        self.cGlobal = ControllerGlobal("cargo")
+        self.activar_registro = 1
+        self.deshabilitar_registro = 0
+        self.nombre_tabla = "cargo"
+        self.cGlobal = ControllerGlobal(self.nombre_tabla)
 
     def crear_cargo(self, cargo: Mcargo):
+        if not all([cargo.nombre.strip(), cargo.descripcion.strip(), cargo.idnivel]):
+            raise HTTPException(status_code=400, detail="Todos los campos son obligatorios")
+        
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
@@ -19,7 +25,7 @@ class Ccargo:
             )
             conn.commit()
             cursor.close()
-            return {"resultado": "cargo creado"}
+            return {"resultado": "cargo creado con exito"}
         except Exception as e:
             raise HTTPException(
                 status_code=500, detail=f"Error al actualizar el item: {str(e)}"
@@ -106,9 +112,9 @@ class Ccargo:
             )
         
     def deshabilitar_cargo(self, cargo_id: int):
-        res = self.cGlobal.modificar_estado(cargo_id,0)
+        res = self.cGlobal.modificar_estado(cargo_id, self.deshabilitar_registro)
         return res
     
     def activar_cargo(self, cargo_id: int):
-        res = self.cGlobal.modificar_estado(cargo_id,1)
+        res = self.cGlobal.modificar_estado(cargo_id, self.activar_registro)
         return res
